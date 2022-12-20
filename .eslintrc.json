@@ -16,7 +16,6 @@
         "linebreak-style": "off",
         "indent": "off",
         "no-shadow": "off",
-        "no-trailing-spaces": "off",
-        "vars-on-top": "off"
+        "no-trailing-spaces": "off"
     }
 }
