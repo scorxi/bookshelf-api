@@ -27,8 +27,6 @@ const addBookHandler = (request, h) => {
         updatedAt,
     };
 
-    const isSuccess = books.filter((book) => book.id === id).length > 0;
-
     if (name === undefined) {
         const response = h.response({
             status: 'fail',
@@ -48,6 +46,8 @@ const addBookHandler = (request, h) => {
     }
 
     books.push(newBook);
+
+    const isSuccess = books.filter((book) => book.id === id).length > 0;
 
     if (isSuccess) {
         const response = h.response({
@@ -91,7 +91,7 @@ const getAllBooksHandler = (request, h) => {
             books: booksFiltered.map((book) => ({
                 id: book.id,
                 name: book.name,
-                finished: book.finished,
+                publisher: book.publisher,
             })),
         },
     });
@@ -135,10 +135,26 @@ const editBookByIdHandler = (request, h) => {
         reading,
     } = request.payload;
 
-    const updatedAt = new Date().toISOString();
+    if (!name) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Gagal memperbarui buku. Mohon isi nama buku',
+        });
+        response.code(400);
+        return response;
+    }
+
+    if (readPage > pageCount) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        });
+        response.code(400);
+        return response;
+    }
 
     const index = books.findIndex((book) => book.id === bookId);
-    const noName = books.filter((book) => book.name === undefined);
+    const updatedAt = new Date().toISOString();
 
     if (index !== -1) {
         books[index] = {
@@ -159,15 +175,6 @@ const editBookByIdHandler = (request, h) => {
             message: 'Buku berhasil diperbarui',
         });
         response.code(200);
-        return response;
-    }
-
-    if (noName) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal memperbarui buku. Mohon isi nama buku',
-        });
-        response.code(400);
         return response;
     }
 
