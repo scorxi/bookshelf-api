@@ -79,10 +79,10 @@ const getAllBooksHandler = (request, h) => {
             .includes(name.toLowerCase()));
     }
     if (reading !== undefined) {
-        booksFiltered = books.filter((book) => book.reading === (reading === 1));
+        booksFiltered = books.filter((book) => book.reading === (reading === '1'));
     }
     if (finished !== undefined) {
-        booksFiltered = books.filter((book) => book.finished === (finished === 1));
+        booksFiltered = books.filter((book) => book.finished === (finished === '1'));
     }
 
     const response = h.response({
