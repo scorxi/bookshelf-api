@@ -8,8 +8,8 @@ const addBookHandler = (request, h) => {
     } = request.payload;
 
     const id = nanoid(16);
-    const finished = books.filter((book) => book.readPage === book.pageCount);
-    const insertedAt = new Date().toISOString;
+    const finished = false;
+    const insertedAt = new Date().toISOString();
     const updatedAt = insertedAt;
 
     const newBook = {
@@ -30,7 +30,7 @@ const addBookHandler = (request, h) => {
     books.push(newBook);
 
     const isSuccess = books.filter((book) => book.id === id).length > 0;
-    const isReadOver = books.filter((book) => book.readPage > book.pageCount);
+    // const isReadOver = books.filter((book) => book.readPage > book.pageCount);
     const noName = books.filter((book) => book.name === undefined);
 
     if (isSuccess) {
@@ -54,7 +54,7 @@ const addBookHandler = (request, h) => {
         return response;
     }
 
-    if (isReadOver) {
+    if (books.readPage > books.pageCount) {
         const response = h.response({
             status: 'fail',
             message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
@@ -74,7 +74,11 @@ const addBookHandler = (request, h) => {
 const getAllBooksHandler = () => ({
     status: 'success',
     data: {
-        books,
+        books: books.map((book) => ({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+        })),
     },
 });
 
@@ -114,7 +118,7 @@ const editBookByIdHandler = (request, h) => {
         reading,
     } = request.payload;
 
-    const updatedAt = new Date().toISOString;
+    const updatedAt = new Date().toISOString();
 
     const index = books.findIndex((book) => book.id === bookId);
     const noName = books.filter((book) => book.name === undefined);
@@ -133,7 +137,7 @@ const editBookByIdHandler = (request, h) => {
             updatedAt,
         };
 
-        const response = h.respons({
+        const response = h.response({
             status: 'success',
             message: 'Buku berhasil diperbarui',
         });
